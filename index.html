@@ -26,7 +26,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;l
 .action-btn.primary{background:var(--primary);color:#fff}
 .action-btn.primary:hover{background:var(--primary-2)}
 .action-btn.secondary{background:var(--bg3);color:var(--text2)}
-.action-btn.cart{background:var(--warm);color:#fff}
+.action-btn.cart{background:var(--warm);color:#fff;position:relative}
 .main{padding:16px;max-width:600px;margin:0 auto}
 .import-section{background:var(--bg2);border:2px dashed var(--border);border-radius:16px;padding:28px 16px;text-align:center;margin-bottom:16px}
 .import-title{font-weight:600;font-size:16px;margin-bottom:4px}
@@ -47,8 +47,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;l
 .result-add{width:40px;height:40px;border-radius:10px;background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:22px;font-weight:700;line-height:1;flex-shrink:0}
 .result-add:active{transform:scale(.92)}
 .result-add.added{background:var(--success)}
-.order-panel{position:fixed;inset:0;background:var(--bg);z-index:200;transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
-.order-panel.visible{transform:translateX(0)}
+.order-panel{position:fixed;inset:0;background:var(--bg);z-index:200;transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;overflow:hidden;visibility:hidden;opacity:0;transition-property:transform,visibility,opacity}
+.order-panel.visible{transform:translateX(0);visibility:visible;opacity:1}
 .order-header{padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
 .order-back{width:40px;height:40px;border-radius:10px;background:var(--bg3);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:18px;flex-shrink:0}
 .order-title{font-weight:700;font-size:16px;flex:1}
@@ -75,13 +75,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;l
 .qty-num{min-width:22px;text-align:center;font-weight:700;font-size:14px}
 .cart-remove{border:none;background:none;color:#dc2626;cursor:pointer;font-size:12px;padding:4px 8px;border-radius:6px}
 .cart-remove:hover{background:#fee2e2}
-.order-footer{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:12px 16px;display:flex;gap:10px;z-index:210;box-shadow:0 -4px 12px rgba(0,0,0,.04)}
+.order-footer{position:absolute;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:12px 16px;display:flex;gap:10px;z-index:5;box-shadow:0 -4px 12px rgba(0,0,0,.04)}
 .order-footer .fbtn{flex:1;height:46px;border-radius:10px;border:none;font-size:14px;font-weight:700;cursor:pointer}
 .fbtn.ghost{background:var(--bg3);color:var(--text2)}
 .fbtn.primary{background:var(--primary);color:#fff}
 .fbtn.send{background:var(--warm);color:#fff}
-.saved-panel{position:fixed;inset:0;background:var(--bg);z-index:220;transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
-.saved-panel.visible{transform:translateX(0)}
+.saved-panel{position:fixed;inset:0;background:var(--bg);z-index:220;transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;visibility:hidden;opacity:0;transition-property:transform,visibility,opacity}
+.saved-panel.visible{transform:translateX(0);visibility:visible;opacity:1}
 .saved-list{flex:1;overflow-y:auto;padding:0 16px 24px}
 .saved-order{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
 .saved-order-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
@@ -152,9 +152,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;l
         <div class="form-row"><input type="text" class="form-input" id="customerName" placeholder="Name"><input type="text" class="form-input" id="customerCompany" placeholder="Company"></div>
         <div class="form-row"><input type="email" class="form-input" id="customerEmail" placeholder="Email"><input type="tel" class="form-input" id="customerPhone" placeholder="Phone"></div>
       </div>
-      <div class="cart-head"><span class="form-label" style="margin-bottom:0">Shopping Cart</span><span class="cart-count" id="cartItemCount">0 items</span></div>
+      <div class="cart-head">
+        <span class="form-label" style="margin-bottom:0">Shopping Cart</span>
+        <span class="cart-count" id="cartItemCount">0 items</span>
+      </div>
       <div id="cartItemsContainer"></div>
-      <div class="cart-head" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)"><span style="font-size:14px;color:var(--text2)">Order total</span><span class="cart-total" id="orderTotal">$0.00</span></div>
+      <div class="cart-head" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+        <span style="font-size:14px;color:var(--text2)">Order total</span>
+        <span class="cart-total" id="orderTotal">$0.00</span>
+      </div>
     </div>
     <div id="orderSummaryMode" style="display:none">
       <div class="customer-card">
@@ -166,7 +172,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;l
       </div>
       <div class="form-label" style="margin-top:8px">Items</div>
       <div id="sumItemsList"></div>
-      <div class="cart-head" style="margin-top:14px;padding:12px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)"><span style="font-size:14px;color:var(--text2)">Order total</span><span class="cart-total" id="sumTotal">$0.00</span></div>
+      <div class="cart-head" style="margin-top:14px;padding:12px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+        <span style="font-size:14px;color:var(--text2)">Order total</span>
+        <span class="cart-total" id="sumTotal">$0.00</span>
+      </div>
       <div id="sumStatus" style="text-align:center;font-size:12px;font-weight:600;padding:8px;border-radius:8px;margin-top:12px"></div>
     </div>
   </div>
@@ -197,10 +206,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;l
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const SK={catalog:'ts_catalog_v2',orders:'ts_orders_v2',theme:'ts_theme_v2'};
+const SK={catalog:'ts_catalog_v2',draftOrder:'ts_draft_order_v2',orders:'ts_orders_v2',theme:'ts_theme_v2'};
 function loadS(k){try{const d=localStorage.getItem(k);return d?JSON.parse(d):null}catch(e){return null}}
 function saveS(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
-let catalog=loadS(SK.catalog)||[];let savedOrders=loadS(SK.orders)||[];let currentOrder=null;let isSummaryMode=false;
+let catalog=loadS(SK.catalog)||[];
+let savedOrders=loadS(SK.orders)||[];
+let currentOrder=null;
 (function(){const t=loadS(SK.theme);if(t&&t.theme)document.body.dataset.theme=t.theme;updateThemeLabel()})();
 function genId(){return 'ORD'+Math.random().toString(36).substr(2,6).toUpperCase()}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('visible');clearTimeout(showToast._t);showToast._t=setTimeout(()=>t.classList.remove('visible'),2000)}
@@ -210,25 +221,82 @@ function searchProducts(q){if(!q.trim())return[];const ql=q.toLowerCase().trim()
 function parseCSVLn(line){const r=[];let c='',inq=false;for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){if(inq&&line[i+1]==='"'){c+='"';i++}else inq=!inq}else if(ch===','&&!inq){r.push(c.trim());c=''}else c+=ch}r.push(c.trim());return r}
 function importCatalog(file){const r=new FileReader();r.onload=e=>{try{const txt=e.target.result,lines=txt.split('\n').map(l=>l.trim()).filter(l=>l);if(lines.length<2){showToast('Import failed');return}const headers=parseCSVLn(lines[0]),prods=[];for(let i=1;i<lines.length;i++){const vs=parseCSVLn(lines[i]),p={};headers.forEach((h,idx)=>p[h]=vs[idx]||'');if(p.sku||p.SKU)prods.push(normProd(p))}if(prods.length===0){showToast('No products found');return}catalog=prods;saveS(SK.catalog,catalog);updateImportVis();renderResults();document.getElementById('statusLine').textContent=catalog.length+' items in catalog';showToast('Imported '+catalog.length+' products')}catch(err){console.error(err);showToast('Import failed')}};r.readAsText(file)}
 function updateImportVis(){document.getElementById('importSection').style.display=catalog.length===0?'block':'none'}
-function renderResults(){const q=document.getElementById('searchInput').value,rc=document.getElementById('resultsContainer');if(catalog.length===0){updateImportVis();rc.innerHTML='';return}if(!q.trim()){rc.innerHTML='<div class="empty-state"><div class="empty-title">Ready to Search</div><div class="empty-desc">Type a SKU or keyword to find products</div></div>';return}const results=searchProducts(q);if(results.length===0){rc.innerHTML='<div class="no-results"><div class="empty-title">No products found</div><div class="empty-desc">Try a different SKU or keyword</div></div>';return}let html='<div class="section-label">'+results.length+' match'+(results.length!==1?'es':'')+'</div>';html+=results.slice(0,50).map(p=>{const inOrder=currentOrder&&currentOrder.items.find(i=>i.sku===p.sku);return '<div class="result-card"><div class="result-info"><div class="result-sku">'+p.sku+'</div><div class="result-title">'+p.title+'</div><div class="result-meta"><span class="result-case">'+p.caseQuantity+'/case</span>'+(p.price?'<span class="result-price">'+money(p.price)+'</span>':'')+'</div></div><button class="result-add '+(inOrder?'added':'')+'" data-sku="'+p.sku+'" aria-label="Add">'+(inOrder?'✓':'+')+'</button></div>'}).join('');rc.innerHTML=html;rc.querySelectorAll('.result-add').forEach(b=>b.addEventListener('click',()=>addToOrder(b.dataset.sku)))}
+function renderResults(){const q=document.getElementById('searchInput').value,rc=document.getElementById('resultsContainer');if(catalog.length===0){updateImportVis();rc.innerHTML='';return}if(!q.trim()){rc.innerHTML='<div class="empty-state"><div class="empty-title">Ready to Search</div><div class="empty-desc">Type a SKU or keyword to find products</div></div>';return}const results=searchProducts(q);if(results.length===0){rc.innerHTML='<div class="no-results"><div class="empty-title">No products found</div><div class="empty-desc">Try a different SKU or keyword</div></div>';return}let html='<div class="section-label">'+results.length+' match'+(results.length!==1?'es':'')+'</div>';html+=results.slice(0,50).map(p=>{const inOrder=currentOrder&&currentOrder.items.find(i=>i.sku===p.sku);return '<div class="result-card"><div class="result-info"><div class="result-sku">'+p.sku+'</div><div class="result-title">'+p.title+'</div><div class="result-meta"><span class="result-case">'+p.caseQuantity+'/case</span>'+(p.price?'<span class="result-price">'+money(p.price)+'</span>':'')+'</div></div><button class="result-add '+(inOrder?'added':'')+'" onclick="addToOrder('+JSON.stringify(p.sku).replace(/"/g,'&quot;')+')" aria-label="Add to order">'+(inOrder?'✓':'+')+'</button></div>'}).join('');rc.innerHTML=html}
+let isSummaryMode=false;
 function newEmptyOrder(){return{id:genId(),customer:{name:'',email:'',phone:'',company:''},items:[],createdAt:Date.now(),status:'draft'}}
-function openOrder(existing){currentOrder=existing?JSON.parse(JSON.stringify(existing)):newEmptyOrder();isSummaryMode=false;document.getElementById('orderPanelTitle').textContent='New Order';document.getElementById('orderPanelId').textContent='';document.getElementById('customerName').value=currentOrder.customer.name||'';document.getElementById('customerEmail').value=currentOrder.customer.email||'';document.getElementById('customerPhone').value=currentOrder.customer.phone||'';document.getElementById('customerCompany').value=currentOrder.customer.company||'';document.getElementById('orderEditMode').style.display='block';document.getElementById('orderSummaryMode').style.display='none';document.getElementById('orderEditFooter').style.display='flex';document.getElementById('orderSummaryFooter').style.display='none';renderCart();document.getElementById('orderPanel').classList.add('visible');window.scrollTo(0,0)}
-function openOrderSummary(o){currentOrder=JSON.parse(JSON.stringify(o));isSummaryMode=true;document.getElementById('orderPanelTitle').textContent='Order Summary';document.getElementById('orderPanelId').textContent=currentOrder.id;document.getElementById('sumCustomerName').textContent=currentOrder.customer.name||'(no name)';document.getElementById('sumCustomerCompany').textContent=currentOrder.customer.company||'';document.getElementById('sumCustomerEmail').textContent=currentOrder.customer.email||'';document.getElementById('sumCustomerPhone').textContent=currentOrder.customer.phone||'';let h='';if(currentOrder.items&&currentOrder.items.length>0){currentOrder.items.forEach(i=>{h+='<div class="cart-item" style="flex-direction:column;align-items:flex-start;gap:6px"><div style="display:flex;justify-content:space-between;width:100%;align-items:baseline"><span class="cart-item-sku" style="font-size:11px;color:var(--primary);font-weight:600;font-family:monospace">'+i.sku+'</span><span style="font-weight:700;font-size:14px">'+money((i.price||0)*i.qty)+'</span></div><div style="font-size:13px;color:var(--text)">'+i.title+'</div><div style="font-size:12px;color:var(--text2)">'+i.qty+' × '+money(i.price)+'/case</div></div>'})}else{h='<div class="cart-empty">No items</div>'}document.getElementById('sumItemsList').innerHTML=h;document.getElementById('sumTotal').textContent=money(currentOrder.items?currentOrder.items.reduce((s,i)=>s+(i.price||0)*i.qty,0):0);const st=document.getElementById('sumStatus');if(currentOrder.status==='sent'){st.textContent='SENT';st.style.background='var(--warm)';st.style.color='#fff'}else{st.textContent='DRAFT';st.style.background='var(--bg3)';st.style.color='var(--text2)'}document.getElementById('orderEditMode').style.display='none';document.getElementById('orderSummaryMode').style.display='block';document.getElementById('orderEditFooter').style.display='none';document.getElementById('orderSummaryFooter').style.display='flex';document.getElementById('orderPanel').classList.add('visible');window.scrollTo(0,0)}
+function openOrder(existing){
+  currentOrder=existing?JSON.parse(JSON.stringify(existing)):newEmptyOrder();
+  isSummaryMode=false;
+  document.getElementById('orderPanelTitle').textContent='New Order';
+  document.getElementById('orderPanelId').textContent='';
+  document.getElementById('customerName').value=currentOrder.customer.name||'';
+  document.getElementById('customerEmail').value=currentOrder.customer.email||'';
+  document.getElementById('customerPhone').value=currentOrder.customer.phone||'';
+  document.getElementById('customerCompany').value=currentOrder.customer.company||'';
+  document.getElementById('orderEditMode').style.display='block';
+  document.getElementById('orderSummaryMode').style.display='none';
+  document.getElementById('orderEditFooter').style.display='flex';
+  document.getElementById('orderSummaryFooter').style.display='none';
+  renderCart();
+  document.getElementById('orderPanel').classList.add('visible');
+  window.scrollTo(0,0);
+}
+function openOrderSummary(o){
+  currentOrder=JSON.parse(JSON.stringify(o));
+  isSummaryMode=true;
+  document.getElementById('orderPanelTitle').textContent='Order Summary';
+  document.getElementById('orderPanelId').textContent=currentOrder.id;
+  document.getElementById('sumCustomerName').textContent=currentOrder.customer.name||'(no name)';
+  document.getElementById('sumCustomerCompany').textContent=currentOrder.customer.company||'';
+  document.getElementById('sumCustomerEmail').textContent=currentOrder.customer.email||'';
+  document.getElementById('sumCustomerPhone').textContent=currentOrder.customer.phone||'';
+  let h='';
+  if(currentOrder.items&&currentOrder.items.length>0){
+    currentOrder.items.forEach(i=>{h+='<div class="cart-item" style="flex-direction:column;align-items:flex-start;gap:6px"><div style="display:flex;justify-content:space-between;width:100%;align-items:baseline"><span class="cart-item-sku" style="font-size:11px;color:var(--primary);font-weight:600;font-family:monospace">'+i.sku+'</span><span style="font-weight:700;font-size:14px">'+money((i.price||0)*i.qty)+'</span></div><div style="font-size:13px;color:var(--text)">'+i.title+'</div><div style="font-size:12px;color:var(--text2)">'+i.qty+' × '+money(i.price)+'/case</div></div>'});
+  }else{h='<div class="cart-empty">No items</div>'}
+  document.getElementById('sumItemsList').innerHTML=h;
+  document.getElementById('sumTotal').textContent=money(currentOrder.items?currentOrder.items.reduce((s,i)=>s+(i.price||0)*i.qty,0):0);
+  const st=document.getElementById('sumStatus');
+  if(currentOrder.status==='sent'){st.textContent='SENT';st.style.background='var(--warm)';st.style.color='#fff'}else{st.textContent='DRAFT';st.style.background='var(--bg3)';st.style.color='var(--text2)'}
+  document.getElementById('orderEditMode').style.display='none';
+  document.getElementById('orderSummaryMode').style.display='block';
+  document.getElementById('orderEditFooter').style.display='none';
+  document.getElementById('orderSummaryFooter').style.display='flex';
+  document.getElementById('orderPanel').classList.add('visible');
+  window.scrollTo(0,0);
+}
 function closeOrder(){document.getElementById('orderPanel').classList.remove('visible');isSummaryMode=false}
-function proceedOrder(){if(!currentOrder)return;if(currentOrder.items.length===0){showToast('Add items first');return}currentOrder.customer=readCustomerFromForm();currentOrder.updatedAt=Date.now();currentOrder.status=currentOrder.status||'draft';const idx=savedOrders.findIndex(o=>o.id===currentOrder.id);if(idx>=0)savedOrders[idx]=JSON.parse(JSON.stringify(currentOrder));else savedOrders.unshift(JSON.parse(JSON.stringify(currentOrder)));saveS(SK.orders,savedOrders);currentOrder=null;updateCartBadge();closeOrder();renderSaved();clearSearch();renderResults();showToast('Order saved ✓')}
+function proceedOrder(){
+  if(!currentOrder){closeOrder();return}
+  if(!currentOrder.items||currentOrder.items.length===0){showToast('Add at least one item first');return}
+  currentOrder.customer=readCustomerFromForm();
+  currentOrder.updatedAt=Date.now();
+  currentOrder.status=currentOrder.status||'draft';
+  const idx=savedOrders.findIndex(o=>o.id===currentOrder.id);
+  if(idx>=0){savedOrders[idx]=JSON.parse(JSON.stringify(currentOrder))}else{savedOrders.unshift(JSON.parse(JSON.stringify(currentOrder)))}
+  saveS(SK.orders,savedOrders);
+  currentOrder=null;
+  updateCartBadge();
+  closeOrder();
+  renderSaved();
+  clearSearch();
+  renderResults();
+  showToast('Order saved ✓');
+}
 function cancelCurrentOrder(){if(!currentOrder)return;if(confirm('Clear this order and go back?')){currentOrder=null;updateCartBadge();closeOrder()}}
 function deleteCurrentOrder(){if(!currentOrder)return;if(!confirm('Delete this order permanently?'))return;savedOrders=savedOrders.filter(o=>o.id!==currentOrder.id);saveS(SK.orders,savedOrders);currentOrder=null;closeOrder();renderSaved();showToast('Order deleted')}
 function emailCurrentOrder(){if(!currentOrder||!currentOrder.customer)return;const c=currentOrder.customer;const subj=encodeURIComponent('Order '+currentOrder.id+(c.name?' from '+c.name:''));const body=encodeURIComponent('Order ID: '+currentOrder.id+'\n'+(c.name?'Customer: '+c.name+'\n':'')+(c.company?'Company: '+c.company+'\n':'')+(c.email?'Email: '+c.email+'\n':'')+(c.phone?'Phone: '+c.phone+'\n':'')+'\nItems:\n'+(currentOrder.items?currentOrder.items.map(i=>i.qty+'x '+i.sku+' '+i.title+' ('+money((i.price||0)*i.qty)+')').join('\n'):'')+'\n\nTotal: '+money(currentOrder.items?currentOrder.items.reduce((s,i)=>s+(i.price||0)*i.qty,0):0));window.open('mailto:'+(c.email||'')+'?subject='+subj+'&body='+body,'_blank');showToast('Opening email client…')}
-function addToOrder(sku){if(!currentOrder||isSummaryMode)openOrder(null);const p=catalog.find(x=>x.sku===sku);if(!p){showToast('Product not found');return}const ex=currentOrder.items.find(i=>i.sku===sku);if(ex)ex.qty+=1;else currentOrder.items.push({sku:p.sku,title:p.title,price:p.price||0,caseQuantity:p.caseQuantity||1,qty:1});renderCart();renderResults();updateCartBadge();showToast('Added: '+p.sku)}
+function addToOrder(sku){if(!currentOrder||isSummaryMode){openOrder(null)}const p=catalog.find(x=>x.sku===sku);if(!p){showToast('Product not found');return}const ex=currentOrder.items.find(i=>i.sku===sku);if(ex)ex.qty+=1;else currentOrder.items.push({sku:p.sku,title:p.title,price:p.price||0,caseQuantity:p.caseQuantity||1,qty:1});renderCart();renderResults();updateCartBadge();showToast('Added: '+p.sku)}
 function changeQty(sku,delta){if(!currentOrder)return;const it=currentOrder.items.find(i=>i.sku===sku);if(!it)return;it.qty+=delta;if(it.qty<=0)currentOrder.items=currentOrder.items.filter(i=>i.sku!==sku);renderCart();renderResults();updateCartBadge()}
 function removeItem(sku){if(!currentOrder)return;currentOrder.items=currentOrder.items.filter(i=>i.sku!==sku);renderCart();renderResults();updateCartBadge()}
 function orderTotal(o){return o.items.reduce((s,i)=>s+(i.price||0)*i.qty,0)}
 function updateCartBadge(){const tot=currentOrder?currentOrder.items.reduce((s,i)=>s+i.qty,0):0;const btn=document.getElementById('cartBtn');if(tot>0&&btn){btn.style.display='flex';document.getElementById('cartCountBadge').textContent=tot;document.getElementById('cartTotalBadge').textContent=orderTotal(currentOrder).toFixed(2)}else if(btn)btn.style.display='none'}
-function renderCart(){const c=document.getElementById('cartItemsContainer');if(!currentOrder||currentOrder.items.length===0){c.innerHTML='<div class="cart-empty">No items yet. Search products and tap + to add them to this order.</div>';document.getElementById('cartItemCount').textContent='0 items';document.getElementById('orderTotal').textContent=money(0);return}let h='';currentOrder.items.forEach(i=>{h+='<div class="cart-item"><div class="cart-item-info"><div class="cart-item-sku">'+i.sku+'</div><div class="cart-item-title">'+i.title+'</div><div class="cart-item-meta">'+i.caseQuantity+'/case · '+money(i.price)+' each · subtotal '+money(i.price*i.qty)+'</div><button class="cart-remove" data-sku="'+i.sku+'">Remove</button></div><div class="qty-control"><button class="qty-btn" data-qty="'+i.sku+',-1" aria-label="Decrease">&minus;</button><span class="qty-num">'+i.qty+'</span><button class="qty-btn" data-qty="'+i.sku+',1" aria-label="Increase">+</button></div></div>'});c.innerHTML=h;c.querySelectorAll('.qty-btn').forEach(b=>b.addEventListener('click',()=>{const p=b.dataset.qty.split(',');changeQty(p[0],parseInt(p[1],10))}));c.querySelectorAll('.cart-remove').forEach(b=>b.addEventListener('click',()=>removeItem(b.dataset.sku)));document.getElementById('cartItemCount').textContent=currentOrder.items.reduce((s,i)=>s+i.qty,0)+' items';document.getElementById('orderTotal').textContent=money(orderTotal(currentOrder));updateCartBadge()}
+function renderCart(){const c=document.getElementById('cartItemsContainer');if(!currentOrder||currentOrder.items.length===0){c.innerHTML='<div class="cart-empty">No items yet. Search and tap + on products to add them.</div>';document.getElementById('cartItemCount').textContent='0 items';document.getElementById('orderTotal').textContent=money(0);return}let h='';currentOrder.items.forEach(i=>{h+='<div class="cart-item"><div class="cart-item-info"><div class="cart-item-sku">'+i.sku+'</div><div class="cart-item-title">'+i.title+'</div><div class="cart-item-meta">'+i.caseQuantity+'/case · '+money(i.price)+' each · subtotal '+money(i.price*i.qty)+'</div></div><div class="qty-control"><button class="qty-btn" onclick="changeQty(\''+i.sku+'\',-1)" aria-label="Decrease">&minus;</button><span class="qty-num">'+i.qty+'</span><button class="qty-btn" onclick="changeQty(\''+i.sku+'\',1)" aria-label="Increase">+</button></div><button class="cart-remove" onclick="removeItem(\''+i.sku+'\')">Remove</button></div>'});c.innerHTML=h;document.getElementById('cartItemCount').textContent=currentOrder.items.reduce((s,i)=>s+i.qty,0)+' items';document.getElementById('orderTotal').textContent=money(orderTotal(currentOrder));updateCartBadge()}
 function readCustomerFromForm(){return{name:document.getElementById('customerName').value.trim(),email:document.getElementById('customerEmail').value.trim(),phone:document.getElementById('customerPhone').value.trim(),company:document.getElementById('customerCompany').value.trim()}}
+function saveCurrentOrder(asSent){currentOrder.customer=readCustomerFromForm();currentOrder.updatedAt=Date.now();if(asSent)currentOrder.status='sent';else currentOrder.status=currentOrder.status||'draft';const idx=savedOrders.findIndex(o=>o.id===currentOrder.id);if(idx>=0)savedOrders[idx]=JSON.parse(JSON.stringify(currentOrder));else savedOrders.unshift(JSON.parse(JSON.stringify(currentOrder)));saveS(SK.orders,savedOrders);showToast(asSent?'Order sent ✓':'Order saved')}
 function openSavedPanel(){document.getElementById('savedPanel').classList.add('visible');renderSaved()}
 function closeSavedPanel(){document.getElementById('savedPanel').classList.remove('visible')}
-function renderSaved(){const c=document.getElementById('savedList');if(savedOrders.length===0){c.innerHTML='<div class="empty-state" style="margin:16px"><div class="empty-title">No saved orders yet</div><div class="empty-desc">Tap New Order to create one</div></div>';return}c.innerHTML=savedOrders.map((o,i)=>'<div class="saved-order"><div class="saved-order-head"><span class="saved-order-id">'+o.id+'</span><span class="saved-order-date">'+new Date(o.updatedAt||o.createdAt).toLocaleString()+'</span></div><div class="saved-order-cust">'+(o.customer.name||'— no name')+(o.customer.company?' · '+o.customer.company:'')+'</div><div class="saved-order-meta">'+(o.items?o.items.reduce((s,i)=>s+i.qty,0):0)+' items · total '+money(o.items?o.items.reduce((s,i)=>s+i.price*i.qty,0):0)+'</div><div class="saved-order-actions"><button class="saved-order-btn open" data-open="'+i+'">Open</button><button class="saved-order-btn export" data-export="'+i+'">Export CSV</button><button class="saved-order-btn danger" data-delete="'+i+'">Delete</button></div></div>').join('');c.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>{const o=savedOrders[parseInt(b.dataset.open,10)];if(o)openOrderSummary(o)}));c.querySelectorAll('[data-export]').forEach(b=>b.addEventListener('click',()=>exportOrderByIdx(parseInt(b.dataset.export,10))));c.querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',()=>deleteOrderByIdx(parseInt(b.dataset.delete,10))))}
+function renderSaved(){const c=document.getElementById('savedList');if(savedOrders.length===0){c.innerHTML='<div class="empty-state" style="margin:16px"><div class="empty-title">No saved orders yet</div><div class="empty-desc">Tap New Order to create one</div></div>';return}c.innerHTML=savedOrders.map((o,i)=>'<div class="saved-order" data-id="'+o.id+'"><div class="saved-order-head"><span class="saved-order-id">'+o.id+'</span><span class="saved-order-date">'+new Date(o.updatedAt||o.createdAt).toLocaleString()+'</span></div><div class="saved-order-cust">'+(o.customer.name||'— no name')+(o.customer.company?' · '+o.customer.company:'')+'</div><div class="saved-order-meta">'+(o.items?o.items.reduce((s,i)=>s+i.qty,0):0)+' items · total '+money(o.items?o.items.reduce((s,i)=>s+i.price*i.qty,0):0)+'</div><div class="saved-order-actions"><button class="saved-order-btn open" data-open="'+i+'">Open</button><button class="saved-order-btn export" data-export="'+i+'">Export CSV</button><button class="saved-order-btn danger" data-delete="'+i+'">Delete</button></div></div>').join('');c.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>{const o=savedOrders[parseInt(b.dataset.open,10)];if(o)openOrderSummary(o)}));c.querySelectorAll('[data-export]').forEach(b=>exportOrderByIdx(parseInt(b.dataset.export,10)));c.querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',()=>deleteOrderByIdx(parseInt(b.dataset.delete,10))))}
 function reopenOrder(id){const o=savedOrders.find(x=>x.id===id);if(!o)return;closeSavedPanel();openOrderSummary(o)}
 function exportOrder(id){const o=savedOrders.find(x=>x.id===id);doExport(o)}
 function exportOrderByIdx(idx){const o=savedOrders[idx];if(o)doExport(o)}
@@ -241,7 +309,7 @@ function clearSearch(){document.getElementById('searchInput').value='';document.
 document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importInput').click());
 document.getElementById('importInput').addEventListener('change',e=>{const f=e.target.files[0];if(f){importCatalog(f);e.target.value=''}});
 document.getElementById('newOrderBtn').addEventListener('click',()=>openOrder(null));
-document.getElementById('cartBtn').addEventListener('click',()=>{if(!currentOrder)currentOrder=newEmptyOrder();openOrder(currentOrder)});
+document.getElementById('cartBtn').addEventListener('click',()=>{if(!currentOrder){currentOrder=newEmptyOrder()}openOrder(currentOrder)});
 document.getElementById('orderBack').addEventListener('click',()=>{if(isSummaryMode)closeOrder();else cancelCurrentOrder()});
 document.getElementById('cancelOrderBtn').addEventListener('click',cancelCurrentOrder);
 document.getElementById('proceedOrderBtn').addEventListener('click',proceedOrder);
@@ -262,7 +330,8 @@ document.getElementById('menuTheme').addEventListener('click',()=>{const cur=doc
 document.getElementById('menuClearCatalog').addEventListener('click',()=>{if(confirm('Clear imported catalog?')){localStorage.removeItem(SK.catalog);catalog=[];updateImportVis();renderResults();document.getElementById('statusLine').textContent='Ready to search';closeMenu();showToast('Catalog cleared')}});
 document.getElementById('menuClearOrders').addEventListener('click',()=>{if(confirm('Clear all saved orders?')){localStorage.removeItem(SK.orders);savedOrders=[];renderSaved();closeMenu();showToast('Orders cleared')}});
 document.getElementById('menuResetAll').addEventListener('click',()=>{if(confirm('Reset ALL data (catalog, orders, theme)?')){Object.values(SK).forEach(k=>localStorage.removeItem(k));location.reload()}});
-(function init(){updateImportVis();renderResults();document.getElementById('statusLine').textContent=catalog.length>0?catalog.length+' items in catalog':'Ready to search';if(catalog.length===0){const sample=[{sku:'DEMO-001',title:'Wireless Bluetooth Earbuds',price:29.99,caseQuantity:12},{sku:'DEMO-002',title:'Portable USB Power Bank',price:19.99,caseQuantity:24},{sku:'DEMO-003',title:'LED Desk Lamp',price:34.99,caseQuantity:18},{sku:'DEMO-004',title:'Ergonomic Laptop Stand',price:49.99,caseQuantity:12},{sku:'DEMO-005',title:'Bluetooth Mechanical Keyboard',price:79.99,caseQuantity:8},{sku:'DEMO-006',title:'USB-C Docking Station',price:89.99,caseQuantity:10}];catalog=sample;saveS(SK.catalog,catalog);document.getElementById('statusLine').textContent='Loaded '+catalog.length+' demo items';renderResults();showToast('Demo catalog loaded — import your CSV to replace')}})();
+window.addToOrder=addToOrder;window.changeQty=changeQty;window.removeItem=removeItem;window.reopenOrder=reopenOrder;window.exportOrder=exportOrder;
+(function init(){updateImportVis();renderResults();document.getElementById('statusLine').textContent=catalog.length>0?catalog.length+' items in catalog':'Ready to search';if(catalog.length===0){const sample=[{sku:'DEMO-001',title:'Wireless Bluetooth Earbuds',price:29.99,caseQuantity:12},{sku:'DEMO-002',title:'Portable USB Power Bank',price:19.99,caseQuantity:24},{sku:'DEMO-003',title:'LED Desk Lamp',price:34.99,caseQuantity:18},{sku:'DEMO-004',title:'Ergonomic Laptop Stand',price:49.99,caseQuantity:12},{sku:'DEMO-005',title:'Bluetooth Mechanical Keyboard',price:79.99,caseQuantity:8},{sku:'DEMO-006',title:'USB-C Docking Station',price:89.99,caseQuantity:10}];catalog=sample;saveS(SK.catalog,catalog);document.getElementById('statusLine').textContent='Loaded '+catalog.length+' demo items';renderResults();showToast('Demo catalog loaded — import your own CSV to replace')}})();
 </script>
 </body>
 </html>
