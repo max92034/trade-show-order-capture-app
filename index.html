@@ -268,7 +268,7 @@ function openOrderSummary(o){
 function closeOrder(){document.getElementById('orderPanel').classList.remove('visible');isSummaryMode=false}
 function proceedOrder(){
   if(!currentOrder){closeOrder();return}
-  if(!currentOrder.items||currentOrder.items.length===0){showToast('Add at least one item first');return}
+  if(!currentOrder.items)currentOrder.items=[];
   currentOrder.customer=readCustomerFromForm();
   currentOrder.updatedAt=Date.now();
   currentOrder.status=currentOrder.status||'draft';
